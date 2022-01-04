@@ -2,6 +2,7 @@
  * @copyright Copyright (c) 2019 Georg Ehrke
  *
  * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Richard Steinmetz <richard@steinmetz.cloud>
  *
  * @license AGPL-3.0-or-later
  *
@@ -225,6 +226,25 @@ export default {
 			return removeMailtoPrefix(this.calendarObjectInstance.organizer.uri) !== principal
 		},
 		/**
+		 * Returns the attendee property corresponding to the current user
+		 *
+		 * @return {?object}
+		 */
+		userAsAttendee() {
+			if (!this.calendarObjectInstance.organizer) {
+				return null
+			}
+
+			const principal = removeMailtoPrefix(this.$store.getters.getCurrentUserPrincipalEmail)
+			for (const attendee of this.calendarObjectInstance.attendees) {
+				if (removeMailtoPrefix(attendee.uri) === principal) {
+					return attendee
+				}
+			}
+
+			return null
+		},
+		/**
 		 * Returns all calendars selectable by the user
 		 *
 		 * @return {object[]}
@@ -386,6 +406,14 @@ export default {
 				params,
 			})
 			this.$store.commit('resetCalendarObjectInstanceObjectIdAndRecurrenceId')
+		},
+		/**
+		 * Closes the editor and returns to normal calendar-view without running any action.
+		 * This is useful if the calendar-object-instance has already been saved.
+		 */
+		closeEditorAndSkipAction() {
+			this.requiresActionOnRouteLeave = false
+			this.closeEditor()
 		},
 		/**
 		 * Resets the calendar-object back to it's original state and closes the editor
