@@ -267,7 +267,7 @@ export default {
 			return true
 		},
 		canChangeAlarmType() {
-		  return this.forceEventAlarmType !== null && this.alarm.type !== this.forceEventAlarmType
+		  return this.forceEventAlarmType === null || this.alarm.type !== this.forceEventAlarmType
 		},
 		alarmTypeName() {
 			return this._uid + '-radio-type-name'
